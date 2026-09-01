@@ -1,0 +1,102 @@
+---
+/** Design system: 証明の作業台 — source/test panels are the evidence table, joined by a verification trace. */
+import CodePanel from "./CodePanel.astro";
+
+const { sourceFilename, testFilename, source, test } = Astro.props;
+---
+
+<section class="comparison" aria-label="Source と Test のコード比較">
+  <CodePanel kind="Source" filename={sourceFilename} code={source} />
+  <i><span>Source</span>✓<span>Test</span></i>
+  <CodePanel kind="Test" filename={testFilename} code={test} />
+</section>
+
+<style>
+  /* Design system: 証明の作業台 — neutral workbench edges recede; verification green exists only on the central trace. */
+  .comparison {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2px;
+    border: 1px solid var(--line);
+    background: var(--line);
+    box-shadow: 0 1.6rem 3rem rgba(0, 0, 0, 0.24);
+  }
+
+  .comparison:before {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: rgba(182, 240, 74, 0.85);
+    content: "";
+  }
+
+  .comparison > i {
+    position: absolute;
+    z-index: 4;
+    top: 3.42rem;
+    left: 50%;
+    display: grid;
+    width: 1.55rem;
+    height: 1.55rem;
+    place-items: center;
+    border: 1px solid rgba(182, 240, 74, 0.7);
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--green);
+    font-family: var(--code);
+    font-size: 0.72rem;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transform: translate(-50%, -50%);
+  }
+
+  .comparison > i span {
+    display: none;
+  }
+
+  .comparison > i:before,
+  .comparison > i:after {
+    position: absolute;
+    top: 50%;
+    width: 1.5rem;
+    height: 1px;
+    background: rgba(182, 240, 74, 0.72);
+    content: "";
+  }
+
+  .comparison > i:before {
+    right: 100%;
+  }
+
+  .comparison > i:after {
+    left: 100%;
+  }
+
+  @media (max-width: 780px) {
+    .comparison {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison:before {
+      top: 50%;
+      right: 0;
+      bottom: auto;
+      left: 0;
+      width: auto;
+      height: 1px;
+    }
+
+    .comparison > i {
+      top: 50%;
+      right: 1.1rem;
+      left: auto;
+      transform: translateY(-50%);
+    }
+  }
+</style>

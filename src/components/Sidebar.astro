@@ -1,0 +1,51 @@
+---
+/** Design system: パケット追跡の作業台 — a fixed package rail preserves Go learning context. */
+import { navigation } from "../data/lessons";
+import { withBase } from "../lib/links";
+
+type Props = { currentPath: string };
+const { currentPath } = Astro.props;
+const lessonCount = navigation.reduce((total, group) => total + group.items.length, 0);
+---
+
+<aside id="sidebar">
+  <div>
+    <a class="brand" href={withBase()}>
+      <span class="brand-mark" aria-hidden="true"><i></i></span>
+      <span><small>Executable Documentation</small><strong><span>PY</span><em>/</em><b>TESTS</b></strong></span>
+    </a>
+    <a class="language-link" href="https://tonbiattack.github.io/java-by-tests/" aria-label="Java by Testsを開く"><small>JAVA EDITION</small><strong>JAVA/<b>TESTS</b> →</strong></a>
+    <a class="language-link typescript-link" href="https://tonbiattack.github.io/typescript-by-tests/" aria-label="TypeScript by Testsを開く"><small>TYPE SCRIPT EDITION</small><strong>TS/<b>TESTS</b> →</strong></a>
+    <section class="repository-links" aria-labelledby="repository-links-title">
+      <h2 id="repository-links-title">GitHub repositories</h2>
+      <a href="https://github.com/tonbiattack/java-by-tests" target="_blank" rel="noreferrer" aria-label="Java by TestsのGitHubリポジトリを新しいタブで開く"><span>JAVA</span><strong>Java by Tests</strong><i aria-hidden="true">↗</i></a>
+      <a href="https://github.com/tonbiattack/typescript-by-tests" target="_blank" rel="noreferrer" aria-label="TypeScript by TestsのGitHubリポジトリを新しいタブで開く"><span>TS</span><strong>TypeScript by Tests</strong><i aria-hidden="true">↗</i></a>
+      <a href="https://github.com/tonbiattack/go-by-tests" target="_blank" rel="noreferrer" aria-label="Go by TestsのGitHubリポジトリを新しいタブで開く"><span>GO</span><strong>Go by Tests</strong><i aria-hidden="true">↗</i></a>
+    </section>
+    <nav>
+      <a class:list={["root", { active: currentPath === "/" }]} href={withBase()}>Getting Started</a>
+      {navigation.map((group) => <section><h2>{group.label}</h2>{group.items.map((lesson) => { const logicalHref = `/python/${lesson.slug}`; return <a class:list={[{ active: currentPath === logicalHref }]} href={withBase(logicalHref)}>{lesson.title}</a>; })}</section>)}
+    </nav>
+  </div>
+  <footer><i></i>Python 3.13 / pytest <span>{String(lessonCount).padStart(2, "0")} lessons</span></footer>
+</aside>
+
+<style>
+  /* Design system: パケット追跡の作業台 — a bracket-and-trace mark anchors the GO/TESTS identity. */
+  aside { position: sticky; top: 0; display: flex; height: 100vh; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); background: #091115; }
+  aside > div { overflow: auto; padding: 1.45rem 1rem 1rem; }
+  .brand { display: flex; align-items: center; gap: .75rem; padding: .2rem .45rem 1.55rem; border-bottom: 1px solid var(--line); }
+  .brand-mark { position: relative; display: inline-block; width: 2.55rem; height: 2.55rem; border: 2px solid var(--paper); border-top-color: rgba(237,245,246,.5); border-bottom-color: rgba(237,245,246,.5); box-shadow: inset 0 0 0 1px rgba(11,17,21,.9); }
+  .brand-mark:before,.brand-mark:after { position: absolute; top: .5rem; bottom: .5rem; width: 2px; background: var(--paper); content: ""; }
+  .brand-mark:before { left: .52rem; }.brand-mark:after { right: .52rem; }
+  .brand-mark i { position: absolute; z-index: 1; top: .93rem; left: .84rem; width: .86rem; height: .46rem; border-bottom: 3px solid var(--green); border-left: 3px solid var(--green); transform: rotate(-45deg); }
+  .brand span + span { display: grid; gap: .18rem; line-height: 1; }
+  .brand small { color: var(--dim); font-family: var(--code); font-size: .54rem; letter-spacing: .1em; text-transform: uppercase; }
+  .brand strong { display: flex; align-items: baseline; color: var(--paper); font-family: var(--display); font-size: .92rem; letter-spacing: .115em; }
+  .brand strong span,.brand strong em { font-weight: 400; }.brand strong em { margin: 0 .04em; color: var(--dim); font-style: normal; }.brand b { color: var(--green); font-weight: 700; }
+  .language-link { display: grid; gap: .18rem; margin: 1rem .45rem 0; padding: .62rem .7rem; border: 1px solid var(--line); border-left: 2px solid var(--bright); background: rgba(0,173,216,.045); color: var(--muted); transition: color 160ms var(--ease),border-color 160ms var(--ease),background 160ms var(--ease); }.language-link+.language-link { margin-top: .5rem; }.language-link:hover { border-color: var(--bright); background: rgba(0,173,216,.1); color: var(--paper); }.language-link small { color: var(--dim); font-family: var(--code); font-size: .54rem; letter-spacing: .1em; }.language-link strong { font-family: var(--display); font-size: .78rem; letter-spacing: .09em; }.language-link b { color: #b6f04a; }.typescript-link b { color: #3178c6; }
+  .repository-links { margin: 1.35rem .45rem 0; padding-top: 1rem; border-top: 1px solid var(--line); }.repository-links h2 { margin: 0 0 .45rem; color: var(--dim); font-family: var(--code); font-size: .54rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }.repository-links a { display: grid; grid-template-columns: 1.65rem minmax(0,1fr) auto; align-items: center; gap: .35rem; padding: .42rem .2rem; border-left: 2px solid transparent; color: var(--muted); font-family: var(--code); font-size: .62rem; letter-spacing: .035em; transition: color 160ms var(--ease),background 160ms var(--ease),border-color 160ms var(--ease); }.repository-links a:hover { border-left-color: var(--bright); background: rgba(0,173,216,.075); color: var(--paper); }.repository-links span { color: var(--bright); font-size: .54rem; }.repository-links strong { font-weight: 400; }.repository-links i { color: var(--dim); font-size: .72rem; font-style: normal; }
+  nav { padding-top: 1.15rem; }.root,section a { display: block; border-left: 2px solid transparent; color: var(--muted); transition: color 160ms var(--ease),background 160ms var(--ease),border-color 160ms var(--ease); }.root { margin-bottom: 1.15rem; padding: .5rem .55rem; font-family: var(--display); font-size: .86rem; font-weight: 600; }section { margin-top: 1.15rem; }section h2 { margin: 0 0 .35rem .58rem; color: var(--dim); font-family: var(--code); font-size: .63rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }section a { padding: .42rem .55rem; font-size: .8rem; }.root:hover,section a:hover,.active { border-left-color: var(--bright)!important; background: rgba(0,173,216,.075); color: var(--paper)!important; }
+  footer { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .45rem; padding: .85rem 1rem; border-top: 1px solid var(--line); color: var(--dim); font-family: var(--code); font-size: .58rem; }footer i { width: .42rem; height: .42rem; border-radius: 50%; background: var(--bright); }
+  @media (max-width:840px) { aside { position: fixed; z-index: 40; left: 0; width: min(18.5rem,86vw); height: 100dvh; transform: translateX(-104%); box-shadow: 1rem 0 2.5rem #000; transition: transform 220ms var(--ease); }aside.open { transform: translateX(0); } }
+</style>

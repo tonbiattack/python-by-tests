@@ -1,0 +1,21 @@
+{
+  "name": "python-by-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro check && astro build",
+    "verify:links": "node scripts/verify-pages-links.mjs",
+    "preview": "astro preview --host 0.0.0.0",
+    "check": "astro check",
+    "test:python": "python -m pytest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "@types/node": "^22.20.1",
+    "astro": "5.16.11",
+    "shiki": "1.29.2",
+    "typescript": "5.6.3"
+  }
+}
