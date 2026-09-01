@@ -1,5 +1,5 @@
 ---
-/** Design system: パケット追跡の作業台 — GitHub PagesのサブパスでもGoの観測経路を保つ共通レイアウト。 */
+/** GitHub PagesのサブパスでもPython教材への経路を保つ共通レイアウト。 */
 import "../styles/global.css";
 import Sidebar from "../components/Sidebar.astro";
 import { lessons } from "../data/lessons";
@@ -19,7 +19,7 @@ const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
-    <title>{title} | Go by Tests</title>
+    <title>{title} | Python by Tests</title>
   </head>
   <body data-base-prefix={basePrefix}>
     <a class="skip" href="#content">本文へ移動</a>
@@ -28,9 +28,10 @@ const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
       <main id="content">
         <header class="mobile">
           <button id="menu" aria-label="目次を開く">☰</button>
-          <a href={asset("")} class="compact"><span class="brand-mark" aria-hidden="true"><i></i></span>GO/<b>TESTS</b></a>
+          <a href={asset("")} class="compact"><span class="brand-mark" aria-hidden="true"><i></i></span>PY/<b>TESTS</b></a>
           <a class="language-switch" href="https://tonbiattack.github.io/java-by-tests/" aria-label="Java by Testsを開く">JAVA →</a>
           <a class="language-switch typescript-switch" href="https://tonbiattack.github.io/typescript-by-tests/" aria-label="TypeScript by Testsを開く">TS →</a>
+          <a class="language-switch go-switch" href="https://tonbiattack.github.io/go-by-tests/" aria-label="Go by Testsを開く">GO →</a>
           <button id="search-open">検索 ⌘K</button>
         </header>
         <slot />
@@ -39,13 +40,13 @@ const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
     <dialog id="search">
       <div class="search-head"><p class="eyebrow">Static index</p><button id="search-close" aria-label="閉じる">×</button></div>
       <h2>教材を検索</h2>
-      <p class="search-help">テーマ、タグ、テスト名、カテゴリ、Goバージョンで絞り込みます。</p>
+      <p class="search-help">テーマ、タグ、テスト名、カテゴリ、Pythonバージョンで絞り込みます。</p>
       <input id="search-input" type="search" placeholder="例: is, list, generator, Python" />
       <p id="search-status" class="search-status" aria-live="polite">{lessons.length}件の教材を表示しています。</p>
       <div id="search-items">
         {lessons.map((lesson) => <a data-search={`${lesson.title} ${lesson.oneLine} ${lesson.testName} ${lesson.section} ${lesson.version} ${lesson.tags.join(" ")}`.toLowerCase()} href={asset(`python/${lesson.slug}`)}><span>{lesson.section} · {lesson.version}</span><strong>{lesson.title}</strong><small>Test {lesson.testName}</small></a>)}
       </div>
-      <p id="search-empty" class="search-empty" role="status" hidden>一致する教材はありません。テーマ、タグ、テスト名、カテゴリ、Goバージョンを変えて検索してください。</p>
+      <p id="search-empty" class="search-empty" role="status" hidden>一致する教材はありません。テーマ、タグ、テスト名、カテゴリ、Pythonバージョンを変えて検索してください。</p>
     </dialog>
     <script>
       const basePrefix = document.body.dataset.basePrefix ?? "";
@@ -101,6 +102,6 @@ const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
   #search-items a:hover { border-color: var(--green); background: rgba(0, 173, 216, .07); }
   #search-items span, #search-items small { color: var(--dim); font-family: var(--code); font-size: .58rem; letter-spacing: .045em; }
   #search-items strong { font-family: var(--display); font-size: .88rem; font-weight: 500; }
-  .language-switch { padding: .25rem .35rem; border: 1px solid var(--line); color: var(--muted); font-family: var(--code); font-size: .62rem; letter-spacing: .05em; }.language-switch:hover { border-color: #b6f04a; color: #b6f04a; }.typescript-switch:hover { border-color: #3178c6; color: #5e9de0; }
+  .language-switch { padding: .25rem .35rem; border: 1px solid var(--line); color: var(--muted); font-family: var(--code); font-size: .62rem; letter-spacing: .05em; }.language-switch:hover { border-color: #b6f04a; color: #b6f04a; }.typescript-switch:hover { border-color: #3178c6; color: #5e9de0; }.go-switch:hover { border-color: #00add8; color: #52c9e7; }
   @media (max-width: 840px) { .shell { display: block; } .mobile { position: sticky; z-index: 20; top: 0; display: flex; height: 4rem; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid var(--line); background: rgba(11, 17, 21, .93); backdrop-filter: blur(1rem); } .mobile button { padding: .25rem; color: var(--muted); } .compact { display: flex; align-items: center; gap: .35rem; font-family: var(--display); font-size: .78rem; letter-spacing: .08em; } .compact b { color: var(--green); } }
 </style>

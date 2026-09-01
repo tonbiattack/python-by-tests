@@ -12,8 +12,14 @@
 
 教材追加・実装時の詳細な方針は [`docs/EXPANSION_GUIDE.md`](./docs/EXPANSION_GUIDE.md) を参照してください。
 
+公開サイト: [tonbiattack.github.io/python-by-tests](https://tonbiattack.github.io/python-by-tests/)
+
+## 学習の入口
+
+まずは [Learning Path](./LEARNING_PATH.md) の順に、各記事の Source と pytest を並べて読みます。現在はPythonで特に誤解されやすいPriority Aの16題材を扱っています。
+
 ## by-tests series
 
-- [Java by Tests](https://github.com/tonbiattack/java-by-tests)
-- [Go by Tests](https://github.com/tonbiattack/go-by-tests)
-- [TypeScript by Tests](https://github.com/tonbiattack/typescript-by-tests)
+- [Java by Tests](https://tonbiattack.github.io/java-by-tests/) ([GitHub](https://github.com/tonbiattack/java-by-tests))
+- [Go by Tests](https://tonbiattack.github.io/go-by-tests/) ([GitHub](https://github.com/tonbiattack/go-by-tests))
+- [TypeScript by Tests](https://tonbiattack.github.io/typescript-by-tests/) ([GitHub](https://github.com/tonbiattack/typescript-by-tests))
