@@ -1,0 +1,103 @@
+---
+/** Design system: 証明の作業台 — dominant paired code with concrete expected results and narrow proof annotations. */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CodeComparison from "../../components/CodeComparison.astro";
+import VersionBadge from "../../components/VersionBadge.astro";
+import GitHubLink from "../../components/GitHubLink.astro";
+import ArticleNavigation from "../../components/ArticleNavigation.astro";
+import { lessons, sourceCode, testCode } from "../../data/lessons";
+
+export function getStaticPaths() {
+  return lessons.map((lesson) => ({ params: { slug: lesson.slug }, props: { lesson } }));
+}
+
+const { lesson } = Astro.props;
+---
+
+<BaseLayout title={lesson.title} description={lesson.oneLine}>
+  <article>
+    <header class="lesson-head">
+      <div>
+        <p class="eyebrow">{lesson.section}</p>
+        <h1>{lesson.title}</h1>
+        <p>{lesson.oneLine}</p>
+      </div>
+      <div class="meta">
+        <VersionBadge version={lesson.version} />
+        <div class="tags" aria-label="タグ">{lesson.tags.map((tag) => <span>{tag}</span>)}</div>
+        <span>01 / 01 proof</span>
+      </div>
+    </header>
+    <CodeComparison sourceFilename={lesson.sourceFile} testFilename={lesson.testFile} source={sourceCode(lesson)} test={testCode(lesson)} />
+    <section class="evidence">
+      <div class="margin"><b>01</b><span>Assertion</span></div>
+      <div>
+        <h2>このテストで確認できること</h2>
+        <ul>{lesson.checks.map((check: string) => <li>{check}</li>)}</ul>
+        <p>{lesson.note}</p>
+        <div class="outcome" aria-label="テストで確認した具体的な結果"><small>OBSERVED RESULT</small><code>{lesson.outcome}</code></div>
+        <div class="links"><GitHubLink path={lesson.sourcePath} /><GitHubLink path={lesson.testPath} /></div>
+      </div>
+      <aside class="proof-card" aria-label="SourceからTestへの検証トレース"><small>PROOF TRACE</small><div><span>Source</span><i>✓</i><span>Test</span></div><p>{lesson.sourceFile}</p><p>{lesson.testFile}</p></aside>
+    </section>
+    <ArticleNavigation currentSlug={lesson.slug} />
+  </article>
+  <script>
+    // Design system: 証明の作業台 — keyboard movement follows the visible proof-to-proof navigation.
+    const isEditing = (element: Element | null) =>
+      element?.closest("input, textarea, select, [contenteditable='true']") !== null;
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        isEditing(document.activeElement) ||
+        document.querySelector("dialog[open]")
+      ) {
+        return;
+      }
+
+      const selector = event.key === "ArrowLeft" ? "[data-lesson-previous]" : event.key === "ArrowRight" ? "[data-lesson-next]" : null;
+      const destination = selector ? document.querySelector<HTMLAnchorElement>(selector) : null;
+      if (!destination) return;
+
+      window.location.assign(destination.href);
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  /* Design system: 証明の作業台 — expected/actual is concrete evidence, while tags stay quiet metadata. */
+  article { max-width: 90rem; margin: 0 auto; padding: clamp(2.6rem, 4.8vw, 4.8rem) clamp(1.25rem, 4vw, 4.5rem) 5rem; }
+  .lesson-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 1.45rem; }
+  .lesson-head h1 { max-width: 20ch; margin: .8rem 0 0; font-family: var(--display); font-size: clamp(2rem, 3.55vw, 3.85rem); font-weight: 600; letter-spacing: -.072em; line-height: 1; }
+  .lesson-head p:not(.eyebrow) { max-width: 41rem; margin: 1.15rem 0 0; color: var(--muted); font-size: .96rem; }
+  .meta { display: grid; justify-items: end; gap: .65rem; padding-bottom: .3rem; color: var(--dim); font-family: var(--code); font-size: .61rem; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+  .tags { display: flex; max-width: 15rem; flex-wrap: wrap; justify-content: flex-end; gap: .28rem; }
+  .tags span { padding: .12rem .28rem; border: 1px solid var(--line); color: var(--muted); font-size: .52rem; letter-spacing: .06em; text-transform: lowercase; }
+  .evidence { position: relative; display: grid; grid-template-columns: 6.5rem minmax(0, 1fr) minmax(10rem, 16rem); gap: clamp(1.5rem, 4vw, 4rem); margin-top: 2.6rem; padding: 2rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .margin { position: relative; display: grid; align-content: start; gap: .35rem; padding-right: 1rem; border-right: 1px solid var(--line); color: var(--dim); font-family: var(--code); font-size: .61rem; letter-spacing: .08em; text-transform: uppercase; }
+  .margin:after { position: absolute; top: .18rem; right: -.25rem; width: .48rem; height: .48rem; border: 1px solid var(--green); border-radius: 50%; background: var(--ink); content: ""; }
+  .margin b { color: var(--green); }
+  .evidence h2 { margin: 0; font-family: var(--display); font-size: 1.15rem; letter-spacing: -.04em; }
+  .evidence ul { display: grid; gap: .35rem; margin: 1rem 0 1.15rem; padding: 0; list-style: none; }
+  .evidence li { position: relative; padding-left: 1.15rem; font-size: .88rem; }
+  .evidence li:before { position: absolute; left: 0; color: var(--green); content: "✓"; }
+  .evidence p { max-width: 46rem; margin: 0; color: var(--muted); font-size: .86rem; }
+  .outcome { display: grid; gap: .45rem; margin-top: 1.25rem; padding: .85rem .95rem; border-left: 2px solid var(--green); background: rgba(182, 240, 74, .045); }
+  .outcome small { color: var(--green); font-family: var(--code); font-size: .56rem; letter-spacing: .1em; }
+  .outcome code { color: var(--paper); font-family: var(--code); font-size: .72rem; line-height: 1.7; white-space: pre-wrap; }
+  .links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.2rem; }
+  .proof-card { display: grid; align-content: start; gap: .7rem; padding: 1rem; border: 1px solid var(--line); background: linear-gradient(145deg, rgba(255, 255, 255, .025), transparent); }
+  .proof-card small { color: var(--dim); font-family: var(--code); font-size: .58rem; letter-spacing: .08em; }
+  .proof-card > div { position: relative; display: flex; align-items: center; justify-content: space-between; padding: .6rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); font-family: var(--code); font-size: .58rem; }
+  .proof-card > div:before { position: absolute; right: 1.8rem; left: 1.8rem; height: 1px; background: var(--green); content: ""; }
+  .proof-card i { position: relative; z-index: 1; display: grid; width: 1.4rem; height: 1.4rem; place-items: center; border: 1px solid var(--green); border-radius: 50%; background: var(--ink); color: var(--green); font-style: normal; }
+  .proof-card p { margin: 0 !important; overflow: hidden; color: var(--paper) !important; font-family: var(--code); font-size: .58rem !important; text-overflow: ellipsis; white-space: nowrap; }
+  @media (max-width: 900px) { .evidence { grid-template-columns: 5rem minmax(0, 1fr); } .proof-card { display: none; } }
+  @media (max-width: 640px) { article { padding-top: 3rem; } .lesson-head { align-items: flex-start; flex-direction: column; gap: 1rem; } .meta { justify-items: start; } .tags { justify-content: flex-start; max-width: none; } .evidence { grid-template-columns: 1fr; gap: 1rem; } .margin { grid-auto-flow: column; justify-content: start; gap: .6rem; padding-right: 0; padding-bottom: .65rem; border-right: 0; border-bottom: 1px solid var(--line); } .margin:after { top: auto; right: .18rem; bottom: -.25rem; } }
+</style>

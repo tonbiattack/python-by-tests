@@ -1,0 +1,106 @@
+---
+/** Design system: パケット追跡の作業台 — GitHub PagesのサブパスでもGoの観測経路を保つ共通レイアウト。 */
+import "../styles/global.css";
+import Sidebar from "../components/Sidebar.astro";
+import { lessons } from "../data/lessons";
+
+type Props = { title: string; description: string };
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const basePrefix = base === "/" ? "" : base.replace(/\/$/, "");
+const logicalPath = basePrefix && Astro.url.pathname.startsWith(basePrefix) ? Astro.url.pathname.slice(basePrefix.length) || "/" : Astro.url.pathname;
+const asset = (path: string) => `${base}${path.replace(/^\//, "")}`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={asset("favicon.svg")} />
+    <title>{title} | Go by Tests</title>
+  </head>
+  <body data-base-prefix={basePrefix}>
+    <a class="skip" href="#content">本文へ移動</a>
+    <div class="shell">
+      <Sidebar currentPath={logicalPath} />
+      <main id="content">
+        <header class="mobile">
+          <button id="menu" aria-label="目次を開く">☰</button>
+          <a href={asset("")} class="compact"><span class="brand-mark" aria-hidden="true"><i></i></span>GO/<b>TESTS</b></a>
+          <a class="language-switch" href="https://tonbiattack.github.io/java-by-tests/" aria-label="Java by Testsを開く">JAVA →</a>
+          <a class="language-switch typescript-switch" href="https://tonbiattack.github.io/typescript-by-tests/" aria-label="TypeScript by Testsを開く">TS →</a>
+          <button id="search-open">検索 ⌘K</button>
+        </header>
+        <slot />
+      </main>
+    </div>
+    <dialog id="search">
+      <div class="search-head"><p class="eyebrow">Static index</p><button id="search-close" aria-label="閉じる">×</button></div>
+      <h2>教材を検索</h2>
+      <p class="search-help">テーマ、タグ、テスト名、カテゴリ、Goバージョンで絞り込みます。</p>
+      <input id="search-input" type="search" placeholder="例: is, list, generator, Python" />
+      <p id="search-status" class="search-status" aria-live="polite">{lessons.length}件の教材を表示しています。</p>
+      <div id="search-items">
+        {lessons.map((lesson) => <a data-search={`${lesson.title} ${lesson.oneLine} ${lesson.testName} ${lesson.section} ${lesson.version} ${lesson.tags.join(" ")}`.toLowerCase()} href={asset(`python/${lesson.slug}`)}><span>{lesson.section} · {lesson.version}</span><strong>{lesson.title}</strong><small>Test {lesson.testName}</small></a>)}
+      </div>
+      <p id="search-empty" class="search-empty" role="status" hidden>一致する教材はありません。テーマ、タグ、テスト名、カテゴリ、Goバージョンを変えて検索してください。</p>
+    </dialog>
+    <script>
+      const basePrefix = document.body.dataset.basePrefix ?? "";
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach((anchor) => {
+        const href = anchor.getAttribute("href");
+        if (!href || !basePrefix || href === basePrefix || href.startsWith(`${basePrefix}/`)) return;
+        anchor.setAttribute("href", `${basePrefix}${href}`);
+      });
+      const side = document.querySelector<HTMLElement>("#sidebar");
+      const dialog = document.querySelector<HTMLDialogElement>("#search");
+      const input = document.querySelector<HTMLInputElement>("#search-input");
+      const searchStatus = document.querySelector<HTMLElement>("#search-status");
+      const searchEmpty = document.querySelector<HTMLElement>("#search-empty");
+      document.querySelector("#menu")?.addEventListener("click", () => side?.classList.toggle("open"));
+      document.querySelector("#search-open")?.addEventListener("click", () => { dialog?.showModal(); input?.focus(); });
+      document.querySelector("#search-close")?.addEventListener("click", () => dialog?.close());
+      document.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); dialog?.showModal(); input?.focus(); }
+      });
+      input?.addEventListener("input", () => {
+        const query = input.value.toLowerCase();
+        let matched = 0;
+        document.querySelectorAll<HTMLElement>("[data-search]").forEach((item) => {
+          const isMatch = item.dataset.search?.includes(query) ?? false;
+          item.hidden = !isMatch;
+          if (isMatch) matched += 1;
+        });
+        if (searchStatus) searchStatus.textContent = query ? `${matched}件の教材が一致しました。` : `${matched}件の教材を表示しています。`;
+        if (searchEmpty) searchEmpty.hidden = matched !== 0;
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Design system: パケット追跡の作業台 — compact controls support the trace without competing with code. */
+  .shell { display: grid; grid-template-columns: 17.75rem minmax(0, 1fr); min-height: 100vh; }
+  .mobile { display: none; }
+  .brand-mark { position: relative; display: inline-block; width: 1.65rem; height: 1.65rem; border-left: 2px solid var(--paper); border-right: 2px solid var(--paper); }
+  .brand-mark i { position: absolute; top: .33rem; left: .32rem; width: .72rem; height: .4rem; border-bottom: 2px solid var(--green); border-left: 2px solid var(--green); transform: rotate(-45deg); }
+  dialog { width: min(42rem, calc(100vw - 2rem)); padding: 1.4rem; border: 1px solid var(--bright); background: var(--raised); color: var(--paper); box-shadow: 0 1.5rem 4rem #000; }
+  dialog::backdrop { background: rgba(3, 6, 7, .72); backdrop-filter: blur(.35rem); }
+  .search-head { display: flex; align-items: center; justify-content: space-between; }
+  .search-head button, .mobile button { border: 1px solid var(--line); background: transparent; cursor: pointer; }
+  .search-head button { width: 2rem; height: 2rem; font-size: 1.25rem; }
+  dialog h2 { margin: .9rem 0 .2rem; font-family: var(--display); letter-spacing: -.04em; }
+  .search-help { margin: 0 0 .9rem; color: var(--muted); font-size: .78rem; }
+  dialog input { width: 100%; padding: .8rem; border: 1px solid var(--bright); background: #091015; color: var(--paper); }
+  .search-status { margin: .65rem 0 0; color: var(--dim); font-family: var(--code); font-size: .62rem; letter-spacing: .04em; }
+  .search-empty { margin: 1rem 0 0; padding: .85rem; border-left: 2px solid var(--green); background: rgba(0, 173, 216, .07); color: var(--muted); font-size: .78rem; }
+  #search-items { display: grid; gap: .35rem; max-height: 24rem; margin-top: .7rem; overflow: auto; }
+  #search-items a { display: grid; gap: .12rem; padding: .65rem .75rem; border-left: 2px solid transparent; color: var(--paper); }
+  #search-items a:hover { border-color: var(--green); background: rgba(0, 173, 216, .07); }
+  #search-items span, #search-items small { color: var(--dim); font-family: var(--code); font-size: .58rem; letter-spacing: .045em; }
+  #search-items strong { font-family: var(--display); font-size: .88rem; font-weight: 500; }
+  .language-switch { padding: .25rem .35rem; border: 1px solid var(--line); color: var(--muted); font-family: var(--code); font-size: .62rem; letter-spacing: .05em; }.language-switch:hover { border-color: #b6f04a; color: #b6f04a; }.typescript-switch:hover { border-color: #3178c6; color: #5e9de0; }
+  @media (max-width: 840px) { .shell { display: block; } .mobile { position: sticky; z-index: 20; top: 0; display: flex; height: 4rem; align-items: center; justify-content: space-between; padding: 0 1rem; border-bottom: 1px solid var(--line); background: rgba(11, 17, 21, .93); backdrop-filter: blur(1rem); } .mobile button { padding: .25rem; color: var(--muted); } .compact { display: flex; align-items: center; gap: .35rem; font-family: var(--display); font-size: .78rem; letter-spacing: .08em; } .compact b { color: var(--green); } }
+</style>

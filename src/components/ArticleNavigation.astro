@@ -1,0 +1,10 @@
+---
+/** Design system: パケット追跡の作業台 — GitHub Pages配下でも隣接するGoの観測へ連続して進む。 */
+import { lessons } from "../data/lessons";
+import { withBase } from "../lib/links";
+const { currentSlug } = Astro.props;
+const index = lessons.findIndex((lesson) => lesson.slug === currentSlug);
+const previous = index > 0 ? lessons[index - 1] : null;
+const next = index < lessons.length - 1 ? lessons[index + 1] : null;
+---
+<nav aria-label="前後の記事">{previous?<a data-lesson-previous href={withBase(`python/${previous.slug}`)}><small>← Previous</small><span>{previous.title}</span></a>:<i/>}{next?<a data-lesson-next class="next" href={withBase(`python/${next.slug}`)}><small>Next →</small><span>{next.title}</span></a>:<i/>}</nav><style>nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3.6rem;padding-top:1.15rem;border-top:1px solid var(--line)}nav a{display:grid;gap:.22rem;padding:.45rem 0;color:var(--muted)}nav a.next{text-align:right}nav a:hover{color:var(--green)}nav small{color:var(--dim);font-family:var(--code);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}nav span{font-family:var(--display);font-size:.88rem}</style>
