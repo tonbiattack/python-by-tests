@@ -1,5 +1,5 @@
 ---
-/** Design system: パケット追跡の作業台 — an asymmetric entry sends the learner directly to a runnable Go proof. */
+/** Pythonの最小コードとpytestの観測結果を並べる入口。 */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CodeComparison from "../components/CodeComparison.astro";
 import VersionBadge from "../components/VersionBadge.astro";
@@ -13,16 +13,16 @@ const lessonCount = String(lessons.length).padStart(2, "0");
 <BaseLayout title="Pythonの挙動をpytestで確かめる" description="Pythonの見落としやすい挙動を、pytestと対になるソースコードで確認する学習サイト。">
   <section class="hero">
     <div>
-      <p class="eyebrow">Go 1.22 / testing</p>
-      <h1>Goの挙動を、<br /><em>テストで</em>観測する。</h1>
-      <p class="lede">説明より先に、実行できる境界条件を見る。Go by Tests は、Sourceとtestingを並べて読むためのExecutable Documentationです。</p>
+      <p class="eyebrow">Python 3.13 / pytest</p>
+      <h1>Pythonの挙動を、<br /><em>テストで</em>観測する。</h1>
+      <p class="lede">説明より先に、実行できる境界条件を見る。Python by Tests は、Sourceとpytestを並べて読むためのExecutable Documentationです。</p>
       <div class="actions"><a class="primary" href={withBase(`python/${featured.slug}`)}>最初の観測を見る →</a><a href="#catalog">{lessons.length} lessons</a></div>
     </div>
-    <figure class="proof-scene" aria-label="SourceとTestをつなぐ実行トレースの構成図"><span class="scene-file source-file">utf8.go</span><span class="scene-file test-file">utf8_test.go</span><i class="scene-trace">→</i><div class="scene-grid"></div><figcaption>Source <b>→</b> Test / observed</figcaption></figure>
+    <figure class="proof-scene" aria-label="SourceとTestをつなぐ実行トレースの構成図"><span class="scene-file source-file">identity.py</span><span class="scene-file test-file">test_lessons.py</span><i class="scene-trace">→</i><div class="scene-grid"></div><figcaption>Source <b>→</b> pytest / observed</figcaption></figure>
   </section>
   <section class="method">
     <p class="eyebrow">The method</p><h2>仕様を暗記する前に、<br />テストの観測結果を読む。</h2>
-    <div>{["Source|確認したい最小のGoコードだけを置きます。","Test|testingパッケージで、挙動をそのまま固定します。","Evidence|値、nil、error、signalを短い結果として残します。"].map((item,index)=>{const [title,text]=item.split("|");return <article><span>0{index+1}</span><h3>{title}</h3><p>{text}</p></article>})}</div>
+    <div>{["Source|確認したい最小のPythonコードだけを置きます。","Test|pytestで、挙動をそのまま固定します。","Evidence|値、None、例外、参照共有を短い結果として残します。"].map((item,index)=>{const [title,text]=item.split("|");return <article><span>0{index+1}</span><h3>{title}</h3><p>{text}</p></article>})}</div>
   </section>
   <section class="featured"><header><div><p class="eyebrow">First observation</p><h2>{featured.title}</h2></div><VersionBadge version={featured.version} /></header><p class="section-lede">{featured.oneLine}</p><CodeComparison sourceFilename={featured.sourceFile} testFilename={featured.testFile} source={sourceCode(featured)} test={testCode(featured)} /></section>
   <section id="catalog" class="catalog"><header><div><p class="eyebrow">Initial catalog</p><h2>まずは、{lessons.length}個の確かな挙動から。</h2></div><span>{lessonCount} / {lessonCount}</span></header><div class="list">{lessons.map((lesson,index)=><a href={withBase(`python/${lesson.slug}`)}><b>{String(index+1).padStart(2,"0")}</b><div><small>{lesson.section}</small><h3>{lesson.title}</h3><em>Test {lesson.testName}</em></div><p>{lesson.oneLine}</p><VersionBadge version={lesson.version}/><i>→</i></a>)}</div></section>
